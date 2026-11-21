@@ -1,7 +1,7 @@
 ---
 title: WPS 表格自动化上线前检查清单
 date: 2026-11-22 00:00:00 +0800
-categories: [办公自动化, WPS]
+categories: [工作, 办公自动化]
 tags: [wps, 调试]
 ---
 

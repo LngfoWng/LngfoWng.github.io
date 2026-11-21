@@ -14,12 +14,12 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: LngfoWng 的技术笔记
+title: LngfoWng 的个人笔记
 
-tagline: WPS 自动化与实用工具
+tagline: 生活 · 工作 · 投资
 
 description: >- # used by seo meta and the atom feed
-  记录办公自动化、脚本调试和 GitHub 使用经验。
+  一个调墨工程师的个人博客，记录生活见闻、调墨工作经验和投资学习。
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
