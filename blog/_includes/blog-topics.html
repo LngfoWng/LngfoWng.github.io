@@ -1,0 +1,15 @@
+<ul class="list-inline">
+{% for topic in site.blog_categories %}
+  {% assign topic_posts = site.categories[topic] %}
+  {% assign post_count = topic_posts | size %}
+  <li>
+    {% if post_count > 0 %}
+      {% assign slug = topic | slugify %}
+      <a href="{{ '/categories/' | append: slug | append: '/' | relative_url }}">{{ topic }}</a>
+    {% else %}
+      <span>{{ topic }}</span>
+    {% endif %}
+    <small>（{{ post_count }} 篇）</small>
+  </li>
+{% endfor %}
+</ul>

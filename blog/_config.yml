@@ -1,0 +1,30 @@
+title: 小王家杂货店
+description: 调墨工程师的个人博客，记录生活、工作、投资与游戏。
+url: https://lngfowng.github.io
+locale: zh-CN
+timezone: Asia/Shanghai
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: air
+search: true
+repository: LngfoWng/LngfoWng.github.io
+permalink: /posts/:title/
+blog_categories: [生活, 工作, 投资, 游戏]
+plugins: [jekyll-include-cache, jekyll-archives]
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: archive
+    tag: archive
+  permalinks:
+    category: /categories/:name/
+    tag: /tags/:name/
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      toc: true
+      read_time: false
+      share: false
+      related: false

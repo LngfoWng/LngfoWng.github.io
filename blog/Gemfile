@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+
+gem "jekyll", "~> 4.3"
+gem "minimal-mistakes-jekyll", "4.28.1"
+gem "jekyll-include-cache", "~> 0.2"
+gem "jekyll-archives", "~> 2.2"
+gem "html-proofer", "~> 5.0"
