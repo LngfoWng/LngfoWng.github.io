@@ -10,14 +10,12 @@ layout: page
 
 {% assign group_index = 0 %}
 
-{% assign sort_categories = site.categories | sort %}
+{% assign sort_categories = site.blog_categories %}
 
-{% for category in sort_categories %}
-  {% assign category_name = category | first %}
-  {% assign posts_of_category = category | last %}
-  {% assign first_post = posts_of_category | first %}
+{% for category_name in sort_categories %}
 
-  {% if category_name == first_post.categories[0] %}
+  {% assign posts_of_category = site.categories[category_name] %}
+
     {% assign sub_categories = '' | split: '' %}
 
     {% for post in posts_of_category %}
@@ -42,7 +40,11 @@ layout: page
           <i class="far fa-folder{% if sub_categories_size > 0 %}-open{% endif %} fa-fw"></i>
 
           {% capture _category_url %}/categories/{{ category_name | slugify | url_encode }}/{% endcapture %}
-          <a href="{{ _category_url | relative_url }}" class="mx-2">{{ category_name }}</a>
+          {% if posts_of_category.size > 0 %}
+            <a href="{{ _category_url | relative_url }}" class="mx-2">{{ category_name }}</a>
+          {% else %}
+            <span class="mx-2">{{ category_name }}</span>
+          {% endif %}
 
           <!-- content count -->
           {% assign top_posts_size = site.categories[category_name] | size %}
@@ -134,5 +136,4 @@ layout: page
     <!-- .card -->
 
     {% assign group_index = group_index | plus: 1 %}
-  {% endif %}
 {% endfor %}

@@ -16,10 +16,12 @@ timezone: Asia/Shanghai
 
 title: 小王家杂货店
 
-tagline: 生活 · 工作 · 投资
+tagline: 生活 · 工作 · 投资 · 游戏
+
+blog_categories: [生活, 工作, 投资, 游戏]
 
 description: >- # used by seo meta and the atom feed
-  一个调墨工程师的个人博客，记录生活见闻、调墨工作经验和投资学习。
+  一个调墨工程师的个人博客，记录生活见闻、调墨工作经验、投资学习和游戏体验。
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
