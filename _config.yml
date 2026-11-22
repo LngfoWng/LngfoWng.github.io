@@ -199,6 +199,7 @@ compress_html:
     envs: [development]
 
 exclude:
+  - blog/
   - "*.gem"
   - "*.gemspec"
   - docs
