@@ -40,19 +40,24 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
-          working-directory: blog
           bundler-cache: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Build theme assets
+        run: npm install && npm run build
+
       - name: Build site
-        working-directory: blog
-        run: bundle exec jekyll build --destination ../_site
+        run: bundle exec jekyll b -d "_site"
         env:
           JEKYLL_ENV: "production"
 
       - name: Test site
-        working-directory: blog
         run: |
-          bundle exec htmlproofer ../_site \
+          bundle exec htmlproofer _site \
             \-\-disable-external \
             \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
 
