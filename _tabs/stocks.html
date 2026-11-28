@@ -63,14 +63,68 @@ order: 5
 <p>报价可能延迟。图表上的涨跌幅随所选区间变化。交易期间显示最新可用报价，收盘后可在日线上查看收盘价。</p>
 
 <h2>自选清单</h2>
-<table>
-  <thead><tr><th scope="col">标的</th><th scope="col">代码</th><th scope="col">币种</th></tr></thead>
+<p id="stocks-quote-status" role="status">表格行情由腾讯财经提供，每分钟刷新，报价可能延迟。日期为标的所在市场的交易日。</p>
+<style>
+  #stocks-watchlist th, #stocks-watchlist td { vertical-align: middle; }
+  #stocks-watchlist td:nth-child(n+2) { white-space: nowrap; }
+  #stocks-watchlist td:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }
+  @media (max-width: 576px) {
+    #stocks-watchlist th, #stocks-watchlist td { padding: .45rem .3rem; }
+  }
+</style>
+<table id="stocks-watchlist" aria-describedby="stocks-quote-status">
+  <thead><tr><th scope="col">标的</th><th scope="col">代码</th><th scope="col">币种</th><th scope="col">当日涨跌</th><th scope="col">行情日期</th></tr></thead>
   <tbody>
-    <tr><td><a href="https://www.tradingview.com/symbols/NASDAQ-PDD/">拼多多</a></td><td>PDD</td><td>USD</td></tr>
-    <tr><td><a href="https://www.tradingview.com/symbols/SSE-512890/">红利低波 ETF</a></td><td>512890</td><td>CNY</td></tr>
-    <tr><td><a href="https://www.tradingview.com/symbols/SZSE-159915/">创业板 ETF</a></td><td>159915</td><td>CNY</td></tr>
-    <tr><td><a href="https://www.tradingview.com/symbols/OTC-TCEHY/">腾讯 ADR</a></td><td>TCEHY</td><td>USD</td></tr>
-    <tr><td><a href="https://www.tradingview.com/symbols/NASDAQ-GOOGL/">Google A 类股</a></td><td>GOOGL</td><td>USD</td></tr>
-    <tr><td><a href="https://www.tradingview.com/symbols/NYSE-BRK.B/">伯克希尔 B 类股</a></td><td>BRK.B</td><td>USD</td></tr>
+    <tr data-quote="usPDD"><td><a href="https://www.tradingview.com/symbols/NASDAQ-PDD/">拼多多</a></td><td>PDD</td><td>USD</td><td>—</td><td>—</td></tr>
+    <tr data-quote="sh512890"><td><a href="https://www.tradingview.com/symbols/SSE-512890/">红利低波 ETF</a></td><td>512890</td><td>CNY</td><td>—</td><td>—</td></tr>
+    <tr data-quote="sz159915"><td><a href="https://www.tradingview.com/symbols/SZSE-159915/">创业板 ETF</a></td><td>159915</td><td>CNY</td><td>—</td><td>—</td></tr>
+    <tr data-quote="usTCEHY"><td><a href="https://www.tradingview.com/symbols/OTC-TCEHY/">腾讯 ADR</a></td><td>TCEHY</td><td>USD</td><td>—</td><td>—</td></tr>
+    <tr data-quote="usGOOGL"><td><a href="https://www.tradingview.com/symbols/NASDAQ-GOOGL/">Google A 类股</a></td><td>GOOGL</td><td>USD</td><td>—</td><td>—</td></tr>
+    <tr data-quote="usBRK.B"><td><a href="https://www.tradingview.com/symbols/NYSE-BRK.B/">伯克希尔 B 类股</a></td><td>BRK.B</td><td>USD</td><td>—</td><td>—</td></tr>
   </tbody>
 </table>
+
+<script>
+(() => {
+  const rows = [...document.querySelectorAll('#stocks-watchlist tr[data-quote]')];
+  const status = document.getElementById('stocks-quote-status');
+  const description = status.textContent;
+  const endpoint = 'https://qt.gtimg.cn/q=' + rows.map(row => row.dataset.quote).join(',');
+  const formatPercent = new Intl.NumberFormat('zh-CN', {
+    style: 'percent',
+    signDisplay: 'exceptZero',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  async function refreshQuotes() {
+    try {
+      const response = await fetch(endpoint, { cache: 'no-store', signal: AbortSignal.timeout(12000) });
+      if (!response.ok) throw new Error('Quote request failed');
+      const payload = new TextDecoder('gb18030').decode(await response.arrayBuffer());
+      const quotes = new Map([...payload.matchAll(/v_([\w.]+)="([^"\r\n]*)"/g)]
+        .map(([, symbol, value]) => [symbol, value.split('~')]));
+
+      let missing = 0;
+      for (const row of rows) {
+        const fields = quotes.get(row.dataset.quote);
+        const date = fields?.[30]?.match(/^(\d{4})-?(\d{2})-?(\d{2})(?=\d{6}$| |$)/);
+        const percent = Number(fields?.[32]);
+        if (!date || !fields[32]?.trim() || !Number.isFinite(percent)) {
+          missing += 1;
+          continue;
+        }
+        row.cells[3].textContent = formatPercent.format(percent / 100);
+        row.cells[4].textContent = date.slice(1).join('-');
+      }
+      status.textContent = missing ? description + ' 部分行情暂未更新。' : description;
+    } catch {
+      status.textContent = description + ' 行情暂时无法刷新。';
+    } finally {
+      window.setTimeout(refreshQuotes, 60000);
+    }
+  }
+
+  refreshQuotes();
+})();
+</script>
