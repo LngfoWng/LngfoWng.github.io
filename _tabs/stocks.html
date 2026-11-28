@@ -29,14 +29,21 @@ order: 5
 </table>
 
 <h2>本人持仓</h2>
-<p>拼多多（PDD） · 400 股</p>
+<table id="stocks-positions" aria-describedby="stocks-position-note">
+  <thead><tr><th scope="col">标的</th><th scope="col">股数</th><th scope="col">当前市值</th><th scope="col">当日金额变动</th></tr></thead>
+  <tbody>
+    <tr data-quote="usPDD" data-currency="USD"><th scope="row">拼多多（PDD）</th><td>400</td><td>—</td><td>—</td></tr>
+  </tbody>
+</table>
+<p id="stocks-position-note">市值按最新可用报价计算，当日金额变动以该报价所属交易日的上一交易日收盘价为基准。</p>
 
 <script>
 (() => {
   const rows = [...document.querySelectorAll('#stocks-watchlist tr[data-quote]')];
+  const positions = [...document.querySelectorAll('#stocks-positions tr[data-quote]')];
   const status = document.getElementById('stocks-quote-status');
   const description = status.textContent;
-  const endpoint = 'https://qt.gtimg.cn/q=' + rows.map(row => row.dataset.quote).join(',');
+  const endpoint = 'https://qt.gtimg.cn/q=' + [...new Set([...rows, ...positions].map(row => row.dataset.quote))].join(',');
   const formatPercent = new Intl.NumberFormat('zh-CN', {
     style: 'percent',
     signDisplay: 'exceptZero',
@@ -63,6 +70,21 @@ order: 5
         }
         row.cells[3].textContent = formatPercent.format(percent / 100);
         row.cells[4].textContent = date.slice(1).join('-');
+      }
+      for (const position of positions) {
+        const fields = quotes.get(position.dataset.quote);
+        const shares = Number(position.cells[1].textContent);
+        const price = Number(fields?.[3]);
+        const previousClose = Number(fields?.[4]);
+        if (!(price > 0 && previousClose > 0)) {
+          missing += 1;
+          continue;
+        }
+        const currencyOptions = { style: 'currency', currency: position.dataset.currency, currencyDisplay: 'code' };
+        const marketValue = new Intl.NumberFormat('en-US', currencyOptions);
+        const dailyChange = new Intl.NumberFormat('en-US', { ...currencyOptions, signDisplay: 'exceptZero' });
+        position.cells[2].textContent = marketValue.format(shares * price);
+        position.cells[3].textContent = dailyChange.format(shares * (price - previousClose));
       }
       status.textContent = missing ? description + ' 部分行情暂未更新。' : description;
     } catch {
