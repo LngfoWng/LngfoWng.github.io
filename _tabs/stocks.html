@@ -6,7 +6,7 @@ icon: fas fa-chart-line
 order: 5
 ---
 
-<p>点击图表上方的标的切换行情，默认查看近一个月日线。将鼠标移到图表上或点按图表，即可查看对应日期和价格。</p>
+<p>点击图表上方的标的切换行情。选择「1天」查看当日表现，选择「1个月」查看近一个月日线。将鼠标移到图表上或点按图表，即可查看对应日期和价格。</p>
 
 <div class="tradingview-widget-container" style="width: 100%; height: clamp(390px, 60vh, 580px)">
   <div class="tradingview-widget-container__widget" style="width: 100%; height: calc(100% - 32px)"></div>
@@ -42,6 +42,7 @@ order: 5
     ]
   ],
   "dateRanges": [
+    "1d|5",
     "1m|1D",
     "3m|1D",
     "12m|1D"
@@ -59,7 +60,7 @@ order: 5
   </script>
 </div>
 
-<p>报价可能延迟。交易期间显示最新可用报价，收盘后可在日线上查看收盘价。</p>
+<p>报价可能延迟。图表上的涨跌幅随所选区间变化。交易期间显示最新可用报价，收盘后可在日线上查看收盘价。</p>
 
 <h2>自选清单</h2>
 <table>
